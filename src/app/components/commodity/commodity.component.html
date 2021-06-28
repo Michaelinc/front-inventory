@@ -1,0 +1,143 @@
+<div class="p-grid ">
+    <div class="p-col p-lg-4 ">
+        <form [formGroup]="this.formCommodity" id=form class="p-grid p-d-flex">
+
+            <div class="p-col p-lg-12">
+                <p-dropdown formControlName="user" [options]="this.users" placeholder="Seleccione un usuario"
+                    optionLabel="userName" [showClear]="true"></p-dropdown>
+            </div>
+
+            <div class="p-col p-lg-12">
+                <span class="p-float-label">
+                    <input [readOnly]="this.is_editing" formControlName="commodityName" class="form-control" type="text"
+                        pInputText>
+                    <label>Nombre del producto</label>
+                </span>
+            </div>
+            <div class="p-col">
+                <span class="p-float-label">
+                    <input formControlName="amount" class="form-control" type="number" pInputText>
+                    <label>Cantidad</label>
+                </span>
+            </div>
+
+            <div class="p-col">
+                <span class="p-float-label">
+                    <p-calendar formControlName="entryDate" dateFormat="dd/mm/yy" class="form-control" [showIcon]="true"
+                        [maxDate]="this.maxDate">
+                    </p-calendar>
+                    <label>Fecha ingreso</label>
+                </span>
+            </div>
+
+            <div style="text-align:center; display:inline" class="p-col p-lg-12">
+                <button [ngClass]="{'p-button-success':this.is_editing}" (click)="this.saveCommodity()"
+                    [disabled]="this.formCommodity.invalid" class="p-button-info" style="margin-left: 10px;" pButton
+                    icon="pi pi-save" [label]='this.is_editing == true ? "Editar" : "Guardar"'>
+                </button>
+                <button (click)="this.resetForm()" class="p-button-rounded p-button-secondary"
+                    style="margin-left: 10px;" pButton icon="pi pi-refresh">
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="p-col">
+        <form [formGroup]="formFilters" class="p-grid">
+            <div class="p-col">
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <p-checkbox [binary]="true" (onChange)="filterStatus($event.checked,'entryDate');"></p-checkbox>
+                    </span>
+                    <span class="p-float-label">
+                        <p-calendar formControlName="entryDate" dateFormat="dd/mm/yy" class="form-control"
+                            [showIcon]="true" [maxDate]="this.maxDate">
+                        </p-calendar>
+                        <label>Fecha ingreso</label>
+                    </span>
+                </div>
+            </div>
+            <div class="p-col">
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <p-checkbox [binary]="true" (onChange)="filterStatus($event.checked,'userId');"></p-checkbox>
+                    </span>
+
+                    <p-dropdown optionValue="userId" formControlName="userId" optionLabel="userId"
+                        [options]="this.users" optionLabel="userName" [showClear]="true"
+                        placeholder="Seleccione un usuario">
+                    </p-dropdown>
+
+                </div>
+            </div>
+            <div class="p-col">
+                <div class="p-inputgroup">
+
+                    <span class="p-inputgroup-addon">
+                        <p-checkbox [binary]="true" (onChange)="filterStatus($event.checked,'commodityName');">
+                        </p-checkbox>
+                    </span>
+                    <span class="p-float-label">
+                        <input formControlName="commodityName" class="form-control" type="text" pInputText>
+                        <label>Nombre producto</label>
+                    </span>
+                </div>
+            </div>
+            <div class="p-col p-lg-1">
+                <button [disabled]="this.formFilters.invalid" (click)="findByFilters()" class="p-button-info" pButton icon="pi pi-search">
+                </button>
+            </div>
+        </form>
+        <p-table [columns]="cols" [responsive]="true" [value]="this.commodities"
+            styleClass="p-datatable-responsive-demo">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns">
+                        {{col.header}}
+                    </th>
+                    <th style="width: 8rem">Acciones</th>
+                </tr>
+
+
+            </ng-template>
+            <ng-template pTemplate="body" let-commodity let-index="rowIndex" let-columns="columns">
+                <tr>
+                    <td class="p-column-title">
+                        <span class="p-column-title">Nombre</span>
+                        {{commodity.commodityName}}
+                    </td>
+                    <td class="p-column-title">
+                        <span class="p-column-title">Cantidad</span>
+                        {{commodity.amount}}
+                    </td>
+                    <td class="p-column-title">
+                        <span class="p-column-title">Fecha Ingreso</span>
+                        {{commodity.entryDate | date}}
+                    </td>
+                    <td class="p-column-title">
+                        <span class="p-column-title">Ingresado por</span>
+                        {{commodity.user.userName}}
+
+                    </td>
+                    <td class="p-column-title">
+                        <span class="p-column-title">Acciones</span>
+                        <button (click)="selectCommodity(commodity,index)" class="p-button-success" pButton
+                            icon="pi pi-pencil">
+                        </button>
+                        <button [disabled]="this.formCommodity.controls['user'].invalid" class="p-button-danger"
+                            style="margin-left: 10px;" pButton icon="pi pi-trash"
+                            (click)="this.removeCommodity(commodity, index)">
+
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-messages *ngIf="this.commodities.length == 0" severity="error">
+            <ng-template pTemplate>
+                <div class="p-ml-2">No se encontro información..</div>
+            </ng-template>
+        </p-messages>
+    </div>
+</div>
